@@ -53,5 +53,5 @@ func Init() {
 }
 
 func connToString(info connection) string {
-	return fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", info.User, info.Password, info.Host, info.Port, info.DBname)
+	return fmt.Sprintf("%s:%s@tcp(mysql)/%s?charset=utf8mb4&parseTime=True&loc=Local", info.User, info.Password, info.DBname)
 }

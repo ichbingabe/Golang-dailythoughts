@@ -1,21 +1,31 @@
 version: '3'
 
 services:
-    postgres:
-        image: postgres:12
+    mysql:
+        image: mysql:8.0.20
+        container_name: mysql-server
         restart: always
         networks:
             - backend
         volumes:
-            - ./db_data:/var/lib/postgresql/data
+            - ./db_data:/var/lib/mysql
             - ./app/config/init.sql:/docker-entrypoint-initdb.d/10-init.sql
         env_file:
             - ./app/config/.env
+        environment:
+            - MYSQL_ROOT_PASSWORD='pwd'
+            - MYSQL_DATABASE='thoughts'
+            - MYSQL_USER='root'
+            - DATABASE_HOST='localhost'
+            - LC_ALL='C.UTF-8'
+            - LANG='C.UTF-8'
+        ports:
+            - "3306:3306"
         healthcheck:
-            test: [ "CMD", "pg_isready", "-q", "-d", "devdb", "-U", "dev" ]
+            test: ["CMD", "test -f var/lib/mysql/db"]
             timeout: 45s
             interval: 10s
-            retries: 10
+            retries: 2
 
 
     webapp:
@@ -25,8 +35,8 @@ services:
         networks:
             - backend
         depends_on:
-            postgres:
-              condition: service_healthy
+            - mysql
+              
 
 
 volumes:
@@ -35,3 +45,6 @@ volumes:
 networks:
     backend:
         driver: bridge
+
+         CREATE USER 'root'@'localhost' IDENTIFIED BY 'pwd';
+         GRANT ALL PRIVILEGES ON * . * TO 'root'@'localhost';
