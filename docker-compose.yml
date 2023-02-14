@@ -21,13 +21,6 @@ services:
             - LANG='C.UTF-8'
         ports:
             - "3306:3306"
-        healthcheck:
-            test: ["CMD", "test -f var/lib/mysql/db"]
-            timeout: 45s
-            interval: 10s
-            retries: 2
-
-
     webapp:
         build: ../webapp
         ports:
@@ -46,5 +39,4 @@ networks:
     backend:
         driver: bridge
 
-         CREATE USER 'root'@'localhost' IDENTIFIED BY 'pwd';
-         GRANT ALL PRIVILEGES ON * . * TO 'root'@'localhost';
+         

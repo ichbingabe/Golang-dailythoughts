@@ -14,6 +14,7 @@ var router *mux.Router
 func initHandlers() {
 	router.HandleFunc("/api/thoughts", controller.GetAllThoughts).Methods("GET")
 	router.HandleFunc("/", controller.SayHello).Methods("GET")
+	router.HandleFunc("/api/thought/{id}", controller.GetThoughtById).Methods("GET")
 }
 
 func Start() {

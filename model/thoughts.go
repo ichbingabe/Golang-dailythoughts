@@ -40,3 +40,34 @@ func GetAllThoughts() ([]Thought, error) {
 
 	return thoughts, nil
 }
+
+func GetThoughtById(id uint64) (Thought, error) {
+	var thought Thought
+
+	query := `select title, content, author from thoughts where id=?`
+
+	rows, err := db.Query(query, id)
+	if err != nil {
+		return thought, err
+	}
+
+	defer rows.Close()
+
+	if rows.Next() {
+		var title, content, author string
+
+		err := rows.Scan(&title, &content, &author)
+		if err != nil {
+			return thought, err
+		}
+
+		thought = Thought{
+			ID:      id,
+			Title:   title,
+			Content: content,
+			Author:  author,
+		}
+	}
+
+	return thought, nil
+}
