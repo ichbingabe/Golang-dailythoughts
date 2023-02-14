@@ -12,9 +12,13 @@ import (
 var router *mux.Router
 
 func initHandlers() {
-	router.HandleFunc("/api/thoughts", controller.GetAllThoughts).Methods("GET")
+	//GET
 	router.HandleFunc("/", controller.SayHello).Methods("GET")
+	router.HandleFunc("/api/thoughts", controller.GetAllThoughts).Methods("GET")
 	router.HandleFunc("/api/thought/{id}", controller.GetThoughtById).Methods("GET")
+	router.HandleFunc("/api/thoughtbytitle/{title}", controller.GetThoughtByTitle).Methods("GET")
+
+	router.HandleFunc("/api/thoughts/new", controller.CreateThought).Methods("POST")
 }
 
 func Start() {

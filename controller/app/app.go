@@ -42,6 +42,42 @@ func GetThoughtById(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(thought)
 }
 
+func GetThoughtByTitle(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	param := mux.Vars(r)["title"]
+	thought, err := model.GetThoughtByTitle(param)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+		return
+	}
+
+	json.NewEncoder(w).Encode(thought)
+}
+
+func CreateThought(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	decoder := json.NewDecoder(r.Body)
+	var thought model.Thought
+	err := decoder.Decode(&thought)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+		return
+	}
+
+	err = model.CreateThought(thought)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+		return
+	} else {
+		w.WriteHeader(http.StatusOK)
+	}
+}
+
 func SayHello(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("hello World!"))
 }

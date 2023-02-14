@@ -7,6 +7,7 @@ type Thought struct {
 	Content string `json:"content"`
 }
 
+//GET
 func GetAllThoughts() ([]Thought, error) {
 	var thoughts []Thought
 
@@ -70,4 +71,48 @@ func GetThoughtById(id uint64) (Thought, error) {
 	}
 
 	return thought, nil
+}
+
+func GetThoughtByTitle(title string) ([]Thought, error) {
+	var thoughts []Thought
+
+	query := `select title, content, author from thoughts where title=(?)`
+
+	rows, err := db.Query(query, title)
+	if err != nil {
+		return thoughts, err
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		var title, content, author string
+
+		err := rows.Scan(&title, &content, &author)
+		if err != nil {
+			return thoughts, err
+		}
+
+		thought := Thought{
+			Title:   title,
+			Content: content,
+			Author:  author,
+		}
+
+		thoughts = append(thoughts, thought)
+	}
+	return thoughts, nil
+}
+
+//POST
+func CreateThought(thought Thought) error {
+
+	query := `insert into thoughts(title, content, author) values(?, ?, ?);`
+
+	_, err := db.Exec(query, thought.Title, thought.Content, thought.Author)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
