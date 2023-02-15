@@ -45,7 +45,7 @@ func GetAllThoughts() ([]Thought, error) {
 func GetThoughtById(id uint64) (Thought, error) {
 	var thought Thought
 
-	query := `select title, content, author from thoughts where id=?`
+	query := `select id, title, content, author from thoughts where id=?`
 
 	rows, err := db.Query(query, id)
 	if err != nil {
@@ -55,6 +55,7 @@ func GetThoughtById(id uint64) (Thought, error) {
 	defer rows.Close()
 
 	if rows.Next() {
+		var id uint64
 		var title, content, author string
 
 		err := rows.Scan(&title, &content, &author)
@@ -76,7 +77,7 @@ func GetThoughtById(id uint64) (Thought, error) {
 func GetThoughtByTitle(title string) ([]Thought, error) {
 	var thoughts []Thought
 
-	query := `select title, content, author from thoughts where title=(?)`
+	query := `select id, title, content, author from thoughts where title=(?)`
 
 	rows, err := db.Query(query, title)
 	if err != nil {
@@ -86,14 +87,16 @@ func GetThoughtByTitle(title string) ([]Thought, error) {
 	defer rows.Close()
 
 	for rows.Next() {
+		var id uint64
 		var title, content, author string
 
-		err := rows.Scan(&title, &content, &author)
+		err := rows.Scan(&id, &title, &content, &author)
 		if err != nil {
 			return thoughts, err
 		}
 
 		thought := Thought{
+			ID:      id,
 			Title:   title,
 			Content: content,
 			Author:  author,
