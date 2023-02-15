@@ -12,3 +12,14 @@ func CreateThought(thought Thought) error {
 
 	return nil
 }
+
+func UpdateThought(thought Thought) error {
+	query = `update thoughts set title=?, content=?, author=? where id=?;`
+
+	_, err := db.Exec(query, thought.Title, thought.Content, thought.Author, thought.ID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
