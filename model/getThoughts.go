@@ -51,7 +51,7 @@ func GetThoughtById(id uint64) (Thought, error) {
 		var id uint64
 		var title, content, author string
 
-		err := rows.Scan(&title, &content, &author)
+		err := rows.Scan(&id, &title, &content, &author)
 		if err != nil {
 			return thought, err
 		}
